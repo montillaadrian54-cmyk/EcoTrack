@@ -1,0 +1,13 @@
+﻿.env
+.env.*
+!.env.example
+node_modules/
+dist/
+build/
+.supabase/
+supabase/.temp/
+*.log
+.DS_Store
+Thumbs.db
+
+test-sms.html

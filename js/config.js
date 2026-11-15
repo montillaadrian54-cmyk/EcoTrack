@@ -1,0 +1,5 @@
+// Paste your values from Supabase: Project Settings > API
+// The anon key is meant to be public (security comes from Row Level Security).
+// NEVER put the service_role key or the PhilSMS token in this file.
+export const SUPABASE_URL = 'https://ccbteodopnjfvlqygybs.supabase.co';
+export const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImNjYnRlb2RvcG5qZnZscXlneWJzIiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTQxMTU0NTQsImV4cCI6MjEwOTY5MTQ1NH0.MQsktX_v3TQ2soFaLuljWeaI4CJBA3ZTxKZVA0GP9pE';
