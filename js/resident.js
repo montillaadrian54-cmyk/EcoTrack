@@ -11,12 +11,12 @@ async function loadSchedule() {
     .eq('zone_id', profile.zone_id).gte('collection_date', from).order('collection_date').order('collection_time');
   if (error) throw error;
   const today = todayManila();
-  el.innerHTML = `<h1>Collection schedule — ${esc(profile.collection_zones?.zone_name ?? 'no zone set')}</h1>
+  el.innerHTML = `<h1>Collection schedule — ${esc(profile.collection_zones?.zone_name ?? 'No purok assigned')}</h1>
   <div class="card"><div class="sc"><table><tr><th>Date</th><th>Time</th><th>Waste type</th><th>Status</th><th></th></tr>
   ${(data || []).map((s) => `<tr><td>${fmtDate(s.collection_date)}</td><td>${fmtTime(s.collection_time)}</td><td>${esc(s.waste_type)}</td>
     <td><span class="pill ${s.status}">${{ scheduled: 'Scheduled', in_progress: 'Collecting now', completed: 'Collected', delayed: 'Delayed', missed: 'Missed', cancelled: 'Cancelled' }[s.status]}</span></td>
     <td>${s.collection_date <= today && s.status !== 'cancelled' ? `<a href="#report" class="btn s" data-sched="${s.id}">Not collected? Report</a>` : ''}</td></tr>`).join('')
-    || '<tr><td colspan="5" class="muted">No schedules posted for your zone yet.</td></tr>'}</table></div></div>`;
+    || '<tr><td colspan="5" class="muted">No schedules posted for your purok yet.</td></tr>'}</table></div></div>`;
   el.querySelectorAll('[data-sched]').forEach((a) => a.addEventListener('click', () => { window.__sched = a.dataset.sched; }));
 }
  
@@ -27,15 +27,20 @@ async function loadReportForm() {
   const { data: zones } = await sb.from('collection_zones').select('id, zone_name').order('zone_name');
   el.innerHTML = `<h1>Report a missed pickup</h1><form class="card stack" id="rf">
     <label>Title<input name="title" required minlength="3" maxlength="120" placeholder="Uncollected garbage near the community road"></label>
-    <label>Zone<select name="zone">${(zones || []).map((z) => `<option value="${z.id}" ${z.id === profile.zone_id ? 'selected' : ''}>${esc(z.zone_name)}</option>`).join('')}</select></label>
+    <label>Purok<select name="zone">${(zones || []).map((z) => `<option value="${z.id}" ${z.id === profile.zone_id ? 'selected' : ''}>${esc(z.zone_name)}</option>`).join('')}</select></label>
     <label>Description<textarea name="description" required minlength="5" maxlength="1000" rows="4" placeholder="Garbage was not collected during the scheduled pickup."></textarea></label>
     <label>Photo evidence (optional, JPG/PNG/WebP up to 5 MB)<input type="file" name="photo" accept="image/jpeg,image/png,image/webp"></label>
     <div><b>Location pin</b> <span class="muted">— click the map where the garbage is (optional)</span>
       <div id="pickmap" class="map" style="height:300px"></div><div class="muted" id="coords">No pin selected</div></div>
     <button class="btn" type="submit" id="submitBtn">Submit report</button></form>`;
-  map = L.map('pickmap').setView([14.5995, 120.9842], 15); pin = null;
-  L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', { maxZoom: 19, attribution: '&copy; OpenStreetMap contributors' }).addTo(map);
-  navigator.geolocation?.getCurrentPosition((p) => map.setView([p.coords.latitude, p.coords.longitude], 17), () => {});
+  map = L.map('pickmap').setView([8.949, 125.5786], 15);
+  pin = null;
+
+  L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
+  maxZoom: 19,
+  attribution: '&copy; OpenStreetMap contributors'
+  }).addTo(map);
+  
   map.on('click', (e) => {
     if (pin) pin.setLatLng(e.latlng); else pin = L.marker(e.latlng).addTo(map);
     $('#coords').textContent = `Pin: ${e.latlng.lat.toFixed(6)}, ${e.latlng.lng.toFixed(6)}`;
@@ -72,7 +77,7 @@ async function loadMyReports() {
   const el = $('#view-myreports');
   const { data, error } = await sb.from('missed_pickup_reports').select('*, collection_zones(zone_name)').order('created_at', { ascending: false });
   if (error) throw error;
-  el.innerHTML = `<h1>My reports</h1><div class="card"><div class="sc"><table><tr><th>No.</th><th>Title</th><th>Zone</th><th>Submitted</th><th>Status</th><th>Time open</th><th></th></tr>
+  el.innerHTML = `<h1>My reports</h1><div class="card"><div class="sc"><table><tr><th>No.</th><th>Title</th><th>Purok</th><th>Submitted</th><th>Status</th><th>Time open</th><th></th></tr>
    ${(data || []).map((r) => `<tr><td>${esc(r.report_no)}</td><td>${esc(r.title)}</td><td>${esc(r.collection_zones?.zone_name)}</td><td>${fmtDateTime(r.created_at)}</td><td>${badge(r.status)}</td><td>${openTime(r)}</td>
    <td><button class="btn s" data-id="${r.id}">Details</button></td></tr>`).join('') || '<tr><td colspan="7" class="muted">You have not submitted any reports.</td></tr>'}</table></div></div>`;
   el.querySelectorAll('[data-id]').forEach((b) => b.onclick = () => showReport(data.find((r) => r.id === b.dataset.id)));
@@ -96,10 +101,10 @@ async function loadProfile() {
   const { data: zones } = await sb.from('collection_zones').select('id, zone_name').order('zone_name');
   const { data: me } = await sb.from('profiles').select('*').eq('id', user.id).single();
   $('#view-profile').innerHTML = `<h1>My profile</h1><form class="card stack" id="pf">
-    <div class="note">SMS notices (collection started, report updates) are sent to this mobile number for your purok/zone.</div>
+    <div class="note">SMS notices (collection started, report updates) are sent to this mobile number for your purok.</div>
     <label>Full name<input name="name" required maxlength="80" value="${esc(me.full_name)}"></label>
     <label>Mobile number<input name="phone" required placeholder="09171234567" value="${esc(me.phone_number || '')}"></label>
-    <label>Purok / collection zone<select name="zone">${(zones || []).map((z) => `<option value="${z.id}" ${z.id === me.zone_id ? 'selected' : ''}>${esc(z.zone_name)}</option>`).join('')}</select></label>
+    <<label>Purok<select name="zone">${(zones || []).map((z) => `<option value="${z.id}" ${z.id === me.zone_id ? 'selected' : ''}>${esc(z.zone_name)}</option>`).join('')}</select></label>
     <button class="btn" type="submit">Save profile</button></form>`;
   $('#pf').onsubmit = async (e) => {
     e.preventDefault(); const f = e.target;

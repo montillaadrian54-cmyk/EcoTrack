@@ -828,3 +828,53 @@ th {
         break-inside: avoid;
     }
 }
+
+.login-brand {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-bottom: -50px;
+    margin-top: -50px; 
+}
+
+.login-logo {
+   width: 90%;
+    max-width: 340px;
+    height: auto;
+    object-fit: contain;
+}
+
+.sidebar-logo {
+    display: block;
+    width: 170px;
+    max-width: 100%;
+    height: auto;
+    object-fit: contain;
+    margin-bottom: 8px;
+}
+
+/* Navigation icons beside labels */
+#nav a {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+#nav .nav-icon {
+  width: 20px;
+  height: 20px;
+  flex-shrink: 0;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+#nav .nav-icon svg {
+  width: 20px;
+  height: 20px;
+  display: block;
+}
+
+#nav .nav-text {
+  display: inline-block;
+}

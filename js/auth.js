@@ -10,12 +10,23 @@ $$('.tab').forEach((b) => b.onclick = () => {
   $('#login').hidden = b.dataset.t !== 'login';
   $('#register').hidden = b.dataset.t !== 'register';
   msg('');
-});
+}); 
  
 // Already signed in? go straight to the right dashboard.
 (async () => {
+  const params = new URLSearchParams(location.search);
+
+  // Do not automatically redirect after logout
+  if (params.has('logout')) {
+    history.replaceState(null, '', location.pathname);
+    return;
+  }
+
   const { data: { session } } = await sb.auth.getSession();
-  if (session) await goDashboard(session.user.id, true);
+
+  if (session) {
+    await goDashboard(session.user.id, true);
+  }
 })();
  
 async function goDashboard(uid, silent = false) {
@@ -27,10 +38,12 @@ async function goDashboard(uid, silent = false) {
  
 // zones for registration (readable without login)
 // zones for registration
+
+// Puroks for registration
 async function loadZones() {
   const select = $('#zones');
 
-  select.innerHTML = '<option value="">Loading zones...</option>';
+  select.innerHTML = '<option value="">Loading puroks...</option>';
 
   const { data, error } = await sb
     .from('collection_zones')
@@ -39,26 +52,27 @@ async function loadZones() {
 
   if (error) {
     console.error('Failed to load collection zones:', error);
-    select.innerHTML = '<option value="">Error loading zones</option>';
-    msg('Could not load collection zones: ' + error.message);
+    select.innerHTML = '<option value="">Error loading puroks</option>';
+    msg('Could not load puroks: ' + error.message);
     return;
   }
 
-  console.log('Loaded collection zones:', data);
+  console.log('Loaded puroks:', data);
 
   if (!data || data.length === 0) {
-    select.innerHTML = '<option value="">No zones available</option>';
+    select.innerHTML = '<option value="">No puroks available</option>';
     return;
   }
 
   select.innerHTML =
-    '<option value="">Select your zone</option>' +
+    '<option value="">Select your purok...</option>' +
     data.map((z) =>
       `<option value="${z.id}">${esc(z.zone_name)}</option>`
     ).join('');
 }
 
 loadZones();
+
  
 $('#login').onsubmit = async (e) => {
   e.preventDefault();
@@ -76,7 +90,7 @@ $('#register').onsubmit = async (e) => {
   if (digits.length === 12 && digits.startsWith('63')) phone = '0' + digits.slice(2);
   else if (digits.length === 10 && digits[0] === '9') phone = '0' + digits;
   if (!/^09\d{9}$/.test(phone)) return msg('Enter a valid Philippine mobile number, e.g. 09171234567.');
-  if (!f.get('zone')) return msg('Please choose your collection zone.');
+  if (!f.get('zone')) return msg('Please choose your purok.');
   const { data, error } = await sb.auth.signUp({
     email: f.get('email').trim(), password: f.get('password'),
     options: { data: { full_name: f.get('full_name').trim(), phone_number: phone, zone_id: f.get('zone') } },
