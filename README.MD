@@ -1,28 +1,28 @@
-
-# EcoTrack v4
+# EcoTrack
 ### Smart Waste Collection Monitoring and Resident Notification System
 
 ## 1. Project Overview
 
-EcoTrack is a web-based waste management system designed to improve communication and coordination between residents, garbage collectors, and barangay officials.
+EcoTrack is a web-based waste collection monitoring system designed to improve communication and coordination between residents, garbage collectors, and barangay officials.
 
-The system allows residents to monitor garbage collection activities, receive notifications when garbage collectors are on their way, and stay informed about collection updates.
+The system allows residents to view collection schedules, monitor collection activities, submit missed pickup reports, and receive SMS notifications about collection updates.
 
-Garbage collectors can manage their assigned collection tasks and update their collection status, while barangay officials can monitor collection activities and manage system information.
+Garbage collectors can manage their assigned collection tasks, update collection progress, and share their location for tracking. Barangay officials can manage system information, monitor collection operations, and review collection records and reports.
 
 ## 2. Problem Statement
 
 Traditional waste collection processes may experience communication gaps between residents, garbage collectors, and barangay officials. Residents may not know when garbage collectors will arrive, resulting in missed collections, improperly timed waste disposal, and inconvenience.
 
-EcoTrack aims to address these problems through digital collection monitoring, live tracking, and SMS notifications.
+EcoTrack aims to address these challenges through digital collection monitoring, location tracking, missed pickup reporting, and SMS notifications.
 
 ## 3. Objectives
 
 - Improve communication between residents and garbage collectors.
-- Provide real-time or updated information about garbage collection activities.
+- Provide updated information about garbage collection activities.
 - Notify residents when garbage collectors are on their way.
 - Allow garbage collectors to update their collection progress.
 - Help barangay officials monitor waste collection operations.
+- Provide a system for reporting and monitoring missed pickups.
 - Improve the efficiency and transparency of garbage collection.
 
 ## 4. Key Features
@@ -31,13 +31,15 @@ EcoTrack aims to address these problems through digital collection monitoring, l
 - Resident account management.
 - View garbage collection schedules.
 - Monitor garbage collection activities.
-- Receive SMS notifications when collectors are on their way.
-- View collection status and updates.
+- Receive SMS notifications about collection updates.
+- View collection status and report updates.
+- Submit and monitor missed pickup reports.
+- Manage personal information, mobile number, and purok.
 
 ### Garbage Collector Module
 - Collector account access.
 - View assigned collection tasks.
-- Update collection status.
+- Update collection status and progress.
 - Share location for live tracking.
 - Notify residents when approaching their area.
 
@@ -47,103 +49,145 @@ EcoTrack aims to address these problems through digital collection monitoring, l
 - Manage collection schedules and assignments.
 - Monitor garbage collection progress.
 - View collection records and reports.
+- Monitor overdue and missed collection activities.
 
 ### SMS Notification
-- Sends notifications to residents about upcoming garbage collection.
-- Informs residents when garbage collectors are on their way.
-- Uses an SMS gateway or provider integrated with the system.
+- Sends collection-related notifications to residents.
+- Notifies residents when garbage collectors are on their way.
+- Provides updates about missed pickup reports.
+- Uses the uniSMS API for SMS integration through Supabase Edge Functions.
 
 ### Live Tracking
-- Displays the garbage collector's location on a map.
-- Allows residents and officials to monitor collection progress.
-- Uses location updates to provide tracking information.
+- Uses the browser's Geolocation API to obtain the garbage collector's location.
+- Stores location updates through Supabase.
+- Displays the collector's location on an interactive map.
+- Supports monitoring of collection progress by authorized users.
+
+*Note: Live tracking requires location permissions, an internet connection, and properly configured location updates.*
 
 ## 5. Technologies Used
 
 | Technology | Purpose |
 |---|---|
-| HTML | Web page structure |
-| CSS | User interface and styling |
-| JavaScript | Frontend functionality |
-| Supabase | Backend and database |
+| HTML5 | Web page structure |
+| CSS3 | User interface and styling |
+| JavaScript (ES Modules) | Frontend functionality |
+| TypeScript | Supabase Edge Function development |
+| Supabase | Backend services and database platform |
 | PostgreSQL | Database management |
 | Supabase Auth | User authentication |
 | Supabase Realtime | Real-time data updates |
-| TypeScript | Edge Function development |
 | Supabase Edge Functions | Server-side operations and integrations |
-| Map API/Library | Map display and location tracking |
-| SMS Gateway/API | Sending SMS notifications |
+| Supabase JavaScript Client | Connects the frontend to Supabase |
+| uniSMS API | Sends SMS notifications |
+| Browser Geolocation API | Obtains the collector's location |
+| Map API/Library | Displays maps and location information |
+| Node.js and npm | Development environment and package management |
+| Supabase CLI | Manages and deploys Supabase services |
+| Prettier | Code formatting |
+| Git | Version control |
+| Visual Studio Code | Code editor |
 
 ## 6. System Requirements
 
-- Windows, macOS, or Linux computer
-- Modern web browser
-- Internet connection
-- Supabase account and project
-- Code editor (Visual Studio Code recommended)
-- Configured SMS gateway or provider
-- Configured map service, if required
+- Windows, macOS, or Linux computer.
+- Modern web browser.
+- Internet connection.
+- Supabase account and project.
+- Visual Studio Code or another code editor.
+- Node.js and npm.
+- Supabase CLI.
+- Configured uniSMS account and API credentials.
+- Configured map service or library.
+- Browser location permissions for collector tracking.
 
 ## 7. Installation and Setup
 
 ### Step 1: Clone or Download the Repository
 
-Download the project or clone the repository:
+Clone the repository:
 
 ```bash
 git clone YOUR_REPOSITORY_URL
 ```
 
-Open the project folder in Visual Studio Code.
+Alternatively, download and extract the project ZIP file.
 
-### Step 2: Configure Supabase
+Open the EcoTrack project folder in Visual Studio Code.
+
+### Step 2: Install Project Dependencies
+
+Open the terminal inside the project folder and run:
+
+```powershell
+npm.cmd install
+```
+
+This installs the development dependencies listed in `package.json`, including Prettier and Supabase CLI.
+
+### Step 3: Configure Supabase
 
 1. Create a Supabase project.
 2. Open your Supabase project dashboard.
 3. Locate your Project URL and publishable key.
-4. Configure the credentials in the appropriate project configuration file.
+4. Configure the credentials in the project's JavaScript configuration file.
+5. Save the configuration.
 
 **Important:** Never expose your Supabase secret key or service role key in frontend JavaScript files.
 
-### Step 3: Set Up the Database
+### Step 4: Set Up the Database
 
 1. Open the Supabase SQL Editor.
 2. Locate the SQL scripts included in the project.
-3. Run the required database setup and migration scripts in the correct order.
-4. Verify that the required tables, relationships, and policies are created.
+3. Execute the required database setup and migration scripts in the correct order.
+4. Verify that the required tables, relationships, functions, and Row Level Security (RLS) policies are created.
 
-### Step 4: Configure Edge Functions
+### Step 5: Configure Supabase Edge Functions
 
-1. Install the Supabase CLI.
-2. Log in to your Supabase account.
-3. Link your local project to your Supabase project.
-4. Configure the required environment secrets.
-5. Deploy the Edge Functions.
+Log in to Supabase:
 
-Example:
-
-```bash
-supabase login
-supabase link --project-ref YOUR_PROJECT_REF
-supabase functions deploy
+```powershell
+npx.cmd supabase login
 ```
 
-### Step 5: Configure SMS Integration
+Link the local project to your Supabase project:
 
-1. Set up your chosen SMS gateway or provider.
-2. Configure the required API credentials securely.
-3. Verify that the SMS integration can send messages.
-4. Test the notification process before using actual resident phone numbers.
+```powershell
+npx.cmd supabase link --project-ref YOUR_PROJECT_REF
+```
 
-### Step 6: Run the System
+Configure the required environment secrets, then deploy the functions:
 
-Open the project's main HTML file using a local development server.
+```powershell
+npx.cmd supabase functions deploy send-sms
+npx.cmd supabase functions deploy escalate-overdue
+```
 
-You can use the VS Code Live Server extension or another local web server.
+Deploy `test-sms` separately if it is included and needed for testing.
+
+### Step 6: Configure SMS Integration
+
+EcoTrack uses the uniSMS API for SMS notifications.
+
+1. Set up a uniSMS account.
+2. Obtain the required API credentials.
+3. Configure the required secrets in Supabase.
+4. Set the SMS configuration variables, including `UNISMS_API_KEY`, `UNISMS_SENDER_ID`, and `SMS_ENABLED`.
+5. Test the SMS integration before sending messages to actual residents.
+
+Keep all SMS API credentials in secure environment secrets, not in frontend JavaScript.
+
+### Step 7: Run the System
+
+Open the project using a local development server.
+
+You can use the Visual Studio Code Live Server extension or another suitable local web server.
 
 Make sure your Supabase configuration is correct before testing the system.
 
 ## 8. Project Structure
+
+The following is a general representation of the EcoTrack project structure. Actual filenames and folders should match the repository.
 
 ```text
 EcoTrack-v4/
@@ -152,62 +196,74 @@ EcoTrack-v4/
 ├── resident.html
 ├── collector.html
 ├── official.html
+├── package.json
+├── package-lock.json
+├── .gitignore
+├── .prettierignore
+├── README.md
 │
 ├── css/
 │   └── style.css
 │
 ├── js/
 │   ├── config.js
-│   ├── supabase.js
+│   ├── common.js
 │   ├── auth.js
 │   ├── resident.js
 │   ├── collector.js
 │   └── official.js
 │
-├── supabase/
-│   ├── migrations/
-│   └── functions/
-│
-├── README.md
-└── .gitignore
+└── supabase/
+    └── functions/
+        ├── _shared/
+        │   └── sms.ts
+        ├── send-sms/
+        │   └── index.ts
+        ├── escalate-overdue/
+        │   └── index.ts
+        └── test-sms/
+            └── index.ts
 ```
 
-*Note: This is an example structure. Adjust it to match the actual files and folders in your project.*
+*Note: This is a representative structure. Update it to reflect the actual folders and files in your repository.*
 
 ## 9. Security and Privacy
 
-- Do not expose secret API keys in frontend code.
+- Never expose secret API keys in frontend code.
 - Apply appropriate Supabase Row Level Security (RLS) policies.
 - Restrict access based on user roles.
-- Protect residents' personal information and phone numbers.
-- Secure SMS gateway credentials using environment secrets.
+- Protect residents' personal information and mobile numbers.
+- Store SMS gateway credentials using secure environment secrets.
 - Request location access only when necessary for tracking.
+- Ensure that only authorized users can access relevant collection and location information.
 
 ## 10. Testing
 
-The system should be tested for:
+The system should be tested for the following:
 
 - User registration and login.
-- Role-based access.
-- Resident and collector data management.
+- Role-based access and permissions.
+- Resident and collector account management.
 - Collection schedule management.
+- Collection task assignments.
 - Collection status updates.
 - Live location tracking.
 - SMS notification delivery.
+- Missed pickup reporting and updates.
 - Database operations.
 - Security and access restrictions.
 
 ## 11. Project Status
 
-**Development Status:** [In Development / Completed]
+**Development Status:** In Development
 
-EcoTrack is being developed to support more organized, transparent, and efficient waste collection operations.
+EcoTrack is being developed to support more organized, transparent, and efficient barangay waste collection operations. Its features are subject to configuration, integration, and testing before deployment.
 
 ## 12. Developers
 
 **Project Name:** EcoTrack v4
 
-**Project Type:** Web-Based Waste Management System
+**Project Type:** Web-Based Waste Collection Monitoring and Resident Notification System
 
 **Development Team:** [Insert Team Name]
 

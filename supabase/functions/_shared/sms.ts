@@ -42,9 +42,9 @@ export type SmsResult = {
 
 function getAuthHeaders(apiKey: string) {
   return {
-    "Authorization": `Basic ${btoa(`${apiKey}:`)}`,
+    Authorization: `Basic ${btoa(`${apiKey}:`)}`,
     "Content-Type": "application/json",
-    "Accept": "application/json",
+    Accept: "application/json",
   };
 }
 
@@ -56,7 +56,7 @@ function getAuthHeaders(apiKey: string) {
  */
 export async function sendSms(
   number09: string,
-  message: string
+  message: string,
 ): Promise<SmsResult> {
   const apiKey = Deno.env.get("UNISMS_API_KEY");
   const senderId = Deno.env.get("UNISMS_SENDER_ID");
@@ -115,16 +115,15 @@ export async function sendSms(
     }
 
     if (!res.ok) {
-      const details = data?.message?.fail_reason ??
+      const details =
+        data?.message?.fail_reason ??
         data?.message?.error ??
         data?.error ??
         data?.message;
 
       return {
         status: "failed",
-        error: String(
-          details || `UniSMS HTTP ${res.status}`
-        ).slice(0, 300),
+        error: String(details || `UniSMS HTTP ${res.status}`).slice(0, 300),
         raw: raw.slice(0, 500),
       };
     }
@@ -147,10 +146,7 @@ export async function sendSms(
 
     if (providerStatus === "sent") {
       status = "sent";
-    } else if (
-      providerStatus === "pending" ||
-      providerStatus === "retrying"
-    ) {
+    } else if (providerStatus === "pending" || providerStatus === "retrying") {
       status = "queued";
     } else if (providerStatus === "failed") {
       status = "failed";
@@ -166,12 +162,13 @@ export async function sendSms(
     return {
       status,
       providerId: providerId ? String(providerId) : undefined,
-      error: status === "failed"
-        ? String(item.fail_reason || "UniSMS message failed").slice(0, 300)
-        : undefined,
+      error:
+        status === "failed"
+          ? String(item.fail_reason || "UniSMS message failed").slice(0, 300)
+          : undefined,
       raw: raw.slice(0, 500),
     };
-
+    
   } catch (e) {
     return {
       status: "failed",
@@ -184,7 +181,7 @@ export async function sendSms(
  * Retrieves one message's delivery information from UniSMS.
  */
 export async function fetchDeliveryStatus(
-  messageId: string
+  messageId: string,
 ): Promise<{ status: string | null; raw: string }> {
   const apiKey = Deno.env.get("UNISMS_API_KEY");
 
@@ -200,7 +197,7 @@ export async function fetchDeliveryStatus(
       `${UNISMS_URL}/sms/${encodeURIComponent(messageId)}`,
       {
         headers: getAuthHeaders(apiKey),
-      }
+      },
     );
 
     const raw = await res.text();
@@ -219,12 +216,10 @@ export async function fetchDeliveryStatus(
     const item = data?.message ?? data?.data?.message ?? data?.data;
 
     return {
-      status: item?.status
-        ? String(item.status).toLowerCase()
-        : null,
+      status: item?.status ? String(item.status).toLowerCase() : null,
       raw: raw.slice(0, 500),
     };
-
+    
   } catch (e) {
     return {
       status: null,

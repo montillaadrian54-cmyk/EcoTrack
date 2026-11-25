@@ -1,5 +1,5 @@
 -- =====================================================================
--- EcoTrack: migration for an EXISTING database (PhilSMS + Start Collection)
+-- EcoTrack: migration for an EXISTING database (UniSMS + Start Collection)
 -- Run once in the Supabase SQL Editor. Safe to keep your data. (Fresh installs: use schema.sql instead.)
 -- =====================================================================
  
@@ -18,7 +18,8 @@ alter table public.profiles add constraint profiles_phone_format
 --   select id, full_name, phone_number from public.profiles where phone_number is not null and phone_number !~ '^09[0-9]{9}$';
  
 -- SMS history: provider + delivery tracking
-alter table public.sms_notifications add column if not exists provider text not null default 'philsms';
+alter table public.sms_notifications add column if not exists provider text not null default 'unisms';
+update public.sms_notifications set provider = 'unisms' where provider = 'unisms';
 alter table public.sms_notifications add column if not exists provider_response text;
 alter table public.sms_notifications add column if not exists delivery_status text;
 alter table public.sms_notifications add column if not exists delivery_checked_at timestamptz;

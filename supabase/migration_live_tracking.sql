@@ -1,6 +1,6 @@
 -- =====================================================================
 -- EcoTrack: migration for an EXISTING database -> LIVE COLLECTOR TRACKING (run once, keeps your data)
--- Requires migration_philsms.sql (start_collection / started_by) to have been run first.
+-- Requires migration_unisms.sql (start_collection / started_by) to have been run first.
 -- =====================================================================
  
 -- The collector's phone reports its position ONLY while a route is in_progress and only for the route

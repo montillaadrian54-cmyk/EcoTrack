@@ -107,9 +107,9 @@ create table public.sms_notifications (
   ref_id uuid not null,                       -- report id or schedule id
   message text not null,
   provider_message_id text,
-  provider text not null default 'philsms',
-  provider_response text,                       -- raw (truncated) reply from PhilSMS, for debugging
-  delivery_status text,                         -- status reported by PhilSMS when checked
+  provider text not null default 'unisms',
+  provider_response text,                       -- raw (truncated) reply from UniSMS, for debugging
+  delivery_status text,                         -- status reported by UniSMS when checked
   delivery_checked_at timestamptz,
   status text not null default 'queued' check (status in ('queued','sent','failed','delivered')),
   error_message text,
