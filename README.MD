@@ -261,15 +261,15 @@ EcoTrack is being developed to support more organized, transparent, and efficien
 
 ## 12. Developers
 
-**Project Name:** EcoTrack v4
+**Project Name:** EcoTrack
 
 **Project Type:** Web-Based Waste Collection Monitoring and Resident Notification System
 
-**Development Team:** [Insert Team Name]
+**Development Team:** Eco
 
-**Institution:** [Insert School/University]
+**Institution:** Caraga State University
 
-**Academic Year:** [Insert Academic Year]
+**Academic Year:** 2026-2027
 
 ---
 
